@@ -4,8 +4,8 @@ from dino_runner.utils.constants import LARGE_CACTUS, SMALL_CACTUS
 from dino_runner.components.obstacles.obstacle import Obstacle
 
 CACTUS = [
-    (LARGE_CACTUS, 500),
-    (SMALL_CACTUS, 500),
+    (LARGE_CACTUS, 300),
+    (SMALL_CACTUS, 325),
 ]
 
 

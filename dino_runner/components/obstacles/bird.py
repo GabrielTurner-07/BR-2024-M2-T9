@@ -1,8 +1,9 @@
 from dino_runner.utils.constants import BIRD
 from dino_runner.components.obstacles.obstacle import Obstacle
+
 import random
 
-BIRD_HEIGHTS = [425, 465, 489]
+BIRD_HEIGHTS = [325, 250, 225]
 
 class Bird(Obstacle):
     def __init__(self):
@@ -14,5 +15,5 @@ class Bird(Obstacle):
         screen.blit(self.image[self.step_index // 5], self.rect)
         self.step_index += 1
 
-        if self.step_index >= 10:
+        if self.step_index >= 9:
             self.step_index = 0

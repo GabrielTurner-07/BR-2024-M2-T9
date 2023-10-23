@@ -14,6 +14,7 @@ class ObstacleManager:
             Cactus(),
             Bird(),
         ]
+
         if len(self.obstacles) == 0:
             self.obstacles.append(obstacle_type[random.randint(0, 1)])
 
@@ -24,15 +25,10 @@ class ObstacleManager:
                 game.playing = False
                 game.death_count += 1
                 break
-            else:
-                    self.obstacles.remove(obstacle)
-    
+
     def reset_obstacles(self):
         self.obstacles = []
 
-    def draw(self, screen):
+    def draw (self, screen):
         for obstacle in self.obstacles:
             obstacle.draw(screen)
-
-    def reset_obstacles(self):
-        self.obstacles = []
