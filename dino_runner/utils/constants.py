@@ -1,6 +1,12 @@
 import pygame
 import os
 
+game_speed = 20
+
+FONT_COLOR = (0, 0, 0)
+FONT_SIZE = 22
+FONT_STYLE = "freesansbold.ttf"
+
 # Global Constants
 TITLE = "Chrome Dino Runner"
 SCREEN_HEIGHT = 600
@@ -70,3 +76,6 @@ BG = pygame.image.load(os.path.join(IMG_DIR, 'Other/Track.png'))
 HEART = pygame.image.load(os.path.join(IMG_DIR, 'Other/SmallHeart.png'))
 
 DEFAULT_TYPE = "default"
+SHIELD_TYPE = "shield"
+HAMMER_TYPE = "hammer"
+PLANE_TYPE = "plane"
