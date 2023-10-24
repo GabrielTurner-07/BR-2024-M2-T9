@@ -1,17 +1,20 @@
 import pygame
 from pygame.sprite import Sprite
 
-from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING, DEFAULT_TYPE, SHIELD_TYPE, DUCKING_SHIELD, JUMPING_SHIELD, RUNNING_SHIELD
+from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING, DEFAULT_TYPE, SHIELD_TYPE, DUCKING_SHIELD, JUMPING_SHIELD, RUNNING_SHIELD,HAMMER_TYPE, RUNNING_HAMMER, JUMPING_HAMMER, DUCKING_HAMMER, RUNNING_BALLOON, JUMPING_BALLON, BALLOON_TYPE, JUMP_SOUND
+
+jump_sound = pygame.mixer.Sound(JUMP_SOUND)
 
 X_POS = 80
 Y_POS = 310
 Y_POS_DUCK = 340
 JUMP_VEL = 8.5
 
-DUCK_IMG = { DEFAULT_TYPE: DUCKING, SHIELD_TYPE: DUCKING_SHIELD}
-JUMP_IMG = { DEFAULT_TYPE: JUMPING, SHIELD_TYPE: JUMPING_SHIELD}
-RUN_IMG = { DEFAULT_TYPE: RUNNING, SHIELD_TYPE: RUNNING_SHIELD}
 
+
+DUCK_IMG = { DEFAULT_TYPE: DUCKING, SHIELD_TYPE: DUCKING_SHIELD, HAMMER_TYPE: DUCKING_HAMMER, BALLOON_TYPE: DUCKING}
+JUMP_IMG = { DEFAULT_TYPE: JUMPING, SHIELD_TYPE: JUMPING_SHIELD, HAMMER_TYPE: JUMPING_HAMMER, BALLOON_TYPE: JUMPING_BALLON}
+RUN_IMG = { DEFAULT_TYPE: RUNNING, SHIELD_TYPE: RUNNING_SHIELD , HAMMER_TYPE: RUNNING_HAMMER, BALLOON_TYPE: RUNNING}
 class Dinosaur(Sprite):
     def __init__(self):
         self.type = DEFAULT_TYPE
@@ -24,11 +27,14 @@ class Dinosaur(Sprite):
         self.dino_run = True
         self.dino_jump = False
         self.dino_duck = False
+        self.flying = False
         self.setup_state()
 
     def setup_state(self):
         self.has_power_up = False
         self.shield = False
+        self.hammer = False
+        self.ballon = False
         self.show_text = False
         self.power_up_time = 0
 
@@ -66,13 +72,16 @@ class Dinosaur(Sprite):
     def jump(self):
         self.image = JUMP_IMG[self.type]
         if self.dino_jump:
-            self.dino_rect.y -= self.jump_vel * 4
-            self.jump_vel -= 0.8
-
+            if self.type == BALLOON_TYPE:
+                self.dino_rect.y = 60
+                self.step_index += 1
+            else:
+                self.dino_rect.y -= self.jump_vel * 4
+                self.jump_vel -= 0.8
         if self.jump_vel < -JUMP_VEL:
             self.dino_rect.y = Y_POS
             self.dino_jump = False
-            self.jump_vel = JUMP_VEL  
+            self.jump_vel = JUMP_VEL
 
     def duck(self):
         self.image = DUCK_IMG[self.type][self.step_index // 5]
@@ -80,7 +89,7 @@ class Dinosaur(Sprite):
         self.dino_rect.x = X_POS
         self.dino_rect.y = Y_POS_DUCK
         self.step_index += 1
-        self.dino_duck = False                  
+        self.dino_duck = False
 
     def draw(self, screen):
         screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))

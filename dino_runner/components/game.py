@@ -1,11 +1,13 @@
 import pygame
 
-from dino_runner.utils.constants import BG, ICON,GAME_OVER , SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE
+from dino_runner.utils.constants import BG, ICON,GAME_OVER , SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, JUMP_SOUND
 from dino_runner.utils.text_utils import draw_message_component, FONT_COLOR
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 from dino_runner.components.power_ups.power_up_manager import PowerUpManager
 from dino_runner.components.cloud import Cloud
+
+jump_sound = pygame.mixer.Sound(JUMP_SOUND)
 
 class Game:
     def __init__(self):
@@ -16,7 +18,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.playing = False
         self.running = False
-        self.game_speed = 20
+        self.game_speed = 5
         self.x_pos_bg = 0
         self.y_pos_bg = 380
         self.score = 0
@@ -66,7 +68,7 @@ class Game:
         if self.score > self.highest_score:
             self.highest_score = self.score
         if self.score % 100 == 0:
-            self.game_speed += 5
+            self.game_speed += 2
 
     def draw(self):
         self.clock.tick(FPS)
@@ -95,7 +97,7 @@ class Game:
         draw_message_component(
             f"Score: {self.score} Best score: {self.highest_score}",
             self.screen, FONT_COLOR[0],
-            pos_x_center=950,
+            pos_x_center=900,
             pos_y_center=50
         )
 
@@ -104,7 +106,7 @@ class Game:
             time_to_show = round((self.player.power_up_time - pygame.time.get_ticks()) / 1000, 2)
             if time_to_show >= 0:
                 draw_message_component(
-                    f"{self.player.type.capitalize()} enabled for {time_to_show} seconds",
+                    f"Power Up type: {self.player.type.capitalize()}  enabled for {time_to_show} seconds",
                     self.screen,
                     FONT_COLOR[0],
                     font_size = 18,

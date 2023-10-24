@@ -3,7 +3,9 @@ import random
 
 from dino_runner.components.obstacles.cactus import Cactus
 from dino_runner.components.obstacles.bird import Bird
+from dino_runner.utils.constants import DIE_SOUND
 
+die_sound = pygame.mixer.Sound(DIE_SOUND)
 
 class ObstacleManager:
     def __init__(self):
@@ -22,7 +24,7 @@ class ObstacleManager:
             obstacle.update(game.game_speed, self.obstacles)
             if game.player.dino_rect.colliderect(obstacle.rect):
                 if not game.player.has_power_up:
-                    pygame.time.delay(500)
+                    die_sound.play()
                     game.playing = False
                     game.death_count += 1
                     break
