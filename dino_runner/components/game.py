@@ -1,13 +1,11 @@
 import pygame
 
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE
+from dino_runner.utils.constants import BG, ICON,GAME_OVER , SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE
+from dino_runner.utils.text_utils import draw_message_component, FONT_COLOR
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
-from dino_runner.utils.cloud import Cloud
-from dino_runner.utils.text_utils import draw_message_component, FONT_STYLE
 from dino_runner.components.power_ups.power_up_manager import PowerUpManager
-
-
+from dino_runner.components.cloud import Cloud
 
 class Game:
     def __init__(self):
@@ -42,10 +40,10 @@ class Game:
     def run(self):
         # Game loop: events - update - draw
         self.playing = True
-        self.game_speed = 20
-        self.score = 0
         self.obstacle_manager.reset_obstacles()
         self.power_up_manager.reset_power_ups()
+        self.game_speed = 20
+        self.score = 0
         while self.playing:
             self.events()
             self.update()
@@ -60,8 +58,8 @@ class Game:
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
         self.obstacle_manager.update(self)
-        self.power_up_manager.update(self)
         self.update_score()
+        self.power_up_manager.update(self)
 
     def update_score(self):
         self.score += 1
@@ -77,6 +75,7 @@ class Game:
         self.draw_score()      
         self.player.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
+        self.power_up_manager.draw(self.screen)
         self.draw_power_up_time()
         pygame.display.update()
         pygame.display.flip()
@@ -93,11 +92,12 @@ class Game:
         self.cloud.update()
 
     def draw_score(self):
-        font = pygame.font.Font(FONT_STYLE, 22)
-        text = font.render(f"Score: {self.score}", True, (0, 0, 0))
-        text_rect = text.get_rect()
-        text_rect.center = (1000, 50)
-        self.screen.blit(text, text_rect)    
+        draw_message_component(
+            f"Score: {self.score} Best score: {self.highest_score}",
+            self.screen, FONT_COLOR[0],
+            pos_x_center=950,
+            pos_y_center=50
+        )
 
     def draw_power_up_time(self):
         if self.player.has_power_up:
@@ -106,6 +106,7 @@ class Game:
                 draw_message_component(
                     f"{self.player.type.capitalize()} enabled for {time_to_show} seconds",
                     self.screen,
+                    FONT_COLOR[0],
                     font_size = 18,
                     pos_x_center = 500,
                     pos_y_center= 50
@@ -128,29 +129,27 @@ class Game:
         half_screen_width = SCREEN_WIDTH // 2
 
         if self.death_count == 0:        
-            font = pygame.font.Font(FONT_STYLE, 22)
-            text = font.render("Press any key to start", True, (0, 0, 0))
-            text_rect = text.get_rect()
-            text_rect.center = (half_screen_width, half_screen_height)
-            self.screen.blit(text, text_rect)
-       
+            draw_message_component("Press any key to start", self.screen, FONT_COLOR[0])
         else: # Tela de restart
             draw_message_component(
                 "Press any key to restart",
-                self.screen,
+                self.screen, 
+                FONT_COLOR[0],
                 pos_y_center=half_screen_height + 140
             )
             draw_message_component(
-                f"Your Score: {self.score} Your best score: {self.highest_score}",
-                self.screen,
+                f"Your Score: {self.score}      Your best score: {self.highest_score}",
+                self.screen, 
+                FONT_COLOR[1],
                 pos_y_center=half_screen_height - 150
             )
             draw_message_component(
                 f"Death count: {self.death_count}",
-                self.screen,
+                self.screen, FONT_COLOR[0],
                 pos_y_center=half_screen_height - 100
             )
-            self.screen.blit(ICON, (half_screen_width - 50, half_screen_height - 30))
+            self.screen.blit(ICON, (half_screen_width - 40, half_screen_height - 40))
+            self.screen.blit(GAME_OVER, (half_screen_width - 190, half_screen_height + 70))
         pygame.display.update()
 
         self.handle_events_on_menu()
